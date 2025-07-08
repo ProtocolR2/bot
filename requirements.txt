@@ -1,0 +1,8 @@
+# --- Telegram Bot ---
+python-telegram-bot==20.7
+
+# --- HTTP para llamadas al backend ---
+requests==2.31.0
+
+# --- Variables de entorno ---
+python-dotenv==1.0.1
