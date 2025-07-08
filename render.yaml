@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: protocolr2-bot
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: "<TU_TOKEN_DEL_BOT_AQUI>"
+      - key: DATABASE_URL
+        value: "postgresql://r2:H425iN91es9wnXG0n787h886CsjMm5gr@dpg-d1mlj0u3jp1c73dqtn7g-a.oregon-postgres.render.com/dbr2"
