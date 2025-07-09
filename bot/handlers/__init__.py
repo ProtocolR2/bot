@@ -1,1 +1,1 @@
-# Inicializador del módulo bot
+# Inicializador del módulo handlers
