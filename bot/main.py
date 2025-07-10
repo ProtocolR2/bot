@@ -40,6 +40,15 @@ application.add_handler(conv_handler)
 application.add_handler(CommandHandler("menu", menu.show_main_menu))
 application.add_handler(CallbackQueryHandler(menu.handle_menu_selection))
 
+# Inicializar bot con FastAPI startup/shutdown events
+@app.on_event("startup")
+async def on_startup():
+    await application.initialize()
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    await application.shutdown()
+
 # Endpoint simple para pruebas
 @app.get("/ping")
 async def ping():
