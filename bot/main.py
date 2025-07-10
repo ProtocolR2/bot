@@ -1,4 +1,8 @@
+import os
+import asyncio
 import logging
+
+from fastapi import FastAPI
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -8,23 +12,26 @@ from telegram.ext import (
 )
 from bot.config import Config
 from bot.handlers import start as start_handler
-from bot.handlers import menu  # para show_main_menu (si lo necesitás en main)
+from bot.handlers import menu  # si necesitas mostrar menú fuera del registro
 
-# Configurar logging para debug
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
 )
 
-def main():
+app = FastAPI()
+
+@app.get("/ping")
+async def ping():
+    return {"status": "ok"}
+
+async def run_bot():
     if not Config.is_valid():
         print("❌ Error: faltan variables de entorno obligatorias (TELEGRAM_TOKEN y/o BACKEND_URL).")
         return
 
-    # Crear la aplicación Telegram
     application = Application.builder().token(Config.BOT_TOKEN).build()
 
-    # Definir ConversationHandler para /start y registro
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start_handler.start)],
         states={
@@ -37,16 +44,25 @@ def main():
         },
         fallbacks=[CommandHandler("cancel", start_handler.cancel_registration)],
     )
-
-    # Agregar handlers a la aplicación
     application.add_handler(conv_handler)
 
-    # Opcional: agregar handler para mostrar menú fuera del registro
+    # Opcional: para menú global
     # application.add_handler(CommandHandler("menu", menu.show_main_menu))
 
-    # Ejecutar el bot con polling (para Render o pruebas locales)
     print("✅ Bot iniciado, esperando mensajes...")
-    application.run_polling()
+    await application.run_polling()
+
+async def main():
+    from uvicorn import Config as UvicornConfig, Server
+
+    port = int(os.getenv("PORT", "8000"))
+    config = UvicornConfig(app, host="0.0.0.0", port=port, log_level="info")
+    server = Server(config)
+
+    await asyncio.gather(
+        server.serve(),
+        run_bot()
+    )
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
