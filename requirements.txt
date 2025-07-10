@@ -1,6 +1,10 @@
 # --- Telegram Bot ---
 python-telegram-bot==20.7
 
+# --- Backend ---
+fastapi==0.95.2
+uvicorn[standard]==0.22.0
+
 # --- HTTP para llamadas al backend ---
 requests==2.31.0
 
@@ -9,6 +13,3 @@ python-dotenv==1.0.1
 
 # --- Para futuras mejoras: logging más avanzado, async requests, etc. ---
 # httpx==0.24.1  # alternativa async para requests, si se necesitara
-
-# --- Comentario temporal para forzar despliegue ---
-# Temporal change to force deploy
