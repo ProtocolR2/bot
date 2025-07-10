@@ -3,17 +3,11 @@
 import logging
 from fastapi import FastAPI, Request
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, ConversationHandler, MessageHandler, filters, CallbackQueryHandler
 
 from bot.config import Config
 from bot.handlers import start as start_handler
 from bot.handlers import menu  # si usás menú fuera del registro
-from telegram.ext import (
-    CommandHandler,
-    ConversationHandler,
-    MessageHandler,
-    filters,
-)
 
 # Configurar logging
 logging.basicConfig(
@@ -42,8 +36,9 @@ conv_handler = ConversationHandler(
 )
 application.add_handler(conv_handler)
 
-# Opcional: comando /menu global
-# application.add_handler(CommandHandler("menu", menu.show_main_menu))
+# Agregar handler para menú
+application.add_handler(CommandHandler("menu", menu.show_main_menu))
+application.add_handler(CallbackQueryHandler(menu.handle_menu_selection))
 
 # Endpoint simple para pruebas
 @app.get("/ping")
