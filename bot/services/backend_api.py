@@ -1,10 +1,10 @@
 import requests
-from bot.config import BACKEND_URL
+from bot.config import Config
 
 def check_user_registered(user_id: int) -> bool:
     """Consulta al backend si el usuario está registrado."""
     try:
-        url = f"{BACKEND_URL}/users/{user_id}"
+        url = f"{Config.BACKEND_URL}/users/{user_id}"
         res = requests.get(url)
         if res.status_code == 200:
             return True
@@ -16,7 +16,7 @@ def check_user_registered(user_id: int) -> bool:
 def get_user_data(user_id: int) -> dict | None:
     """Obtiene datos completos del usuario desde el backend."""
     try:
-        url = f"{BACKEND_URL}/users/{user_id}"
+        url = f"{Config.BACKEND_URL}/users/{user_id}"
         res = requests.get(url)
         if res.status_code == 200:
             return res.json()
@@ -28,7 +28,7 @@ def get_user_data(user_id: int) -> dict | None:
 def register_user(user_info: dict) -> bool:
     """Registra un usuario nuevo en el backend."""
     try:
-        url = f"{BACKEND_URL}/users/"
+        url = f"{Config.BACKEND_URL}/users/"
         res = requests.post(url, json=user_info)
         return res.status_code == 201
     except Exception as e:
