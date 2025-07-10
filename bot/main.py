@@ -45,10 +45,15 @@ application.add_handler(CallbackQueryHandler(menu.handle_menu_selection))
 async def ping():
     return {"status": "ok"}
 
-# Endpoint del webhook
+# Endpoint del webhook con logging y manejo de errores
 @app.post("/webhook")
 async def telegram_webhook(req: Request):
-    data = await req.json()
-    update = Update.de_json(data, application.bot)
-    await application.process_update(update)
-    return {"status": "ok"}
+    try:
+        data = await req.json()
+        logging.info(f"Webhook received data: {data}")
+        update = Update.de_json(data, application.bot)
+        await application.process_update(update)
+        return {"status": "ok"}
+    except Exception as e:
+        logging.error(f"Error processing update: {e}", exc_info=True)
+        return {"status": "error", "detail": str(e)}
