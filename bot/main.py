@@ -17,8 +17,8 @@ logging.basicConfig(
 )
 
 def main():
-    if not Config.BOT_TOKEN:
-        print("❌ Error: la variable TELEGRAM_TOKEN no está configurada en entorno.")
+    if not Config.is_valid():
+        print("❌ Error: faltan variables de entorno obligatorias (TELEGRAM_TOKEN y/o BACKEND_URL).")
         return
 
     # Crear la aplicación Telegram
