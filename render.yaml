@@ -13,6 +13,6 @@ services:
       - key: SUPPORTED_LANGUAGES
         value: "es,en"
       - key: BACKEND_URL
-        value: "https://protocolr2-backend.onrender.com"
+        value: "https://backend-4vzk.onrender.com"
       - key: TELEGRAM_TOKEN
-        sync: false  # lo configurás manualmente en Render, no lo subimos nunca
+        sync: false
