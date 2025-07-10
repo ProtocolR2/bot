@@ -6,4 +6,9 @@ requests==2.31.0
 
 # --- Variables de entorno ---
 python-dotenv==1.0.1
+
+# --- Para futuras mejoras: logging más avanzado, async requests, etc. ---
+# httpx==0.24.1  # alternativa async para requests, si se necesitara
+
+# --- Comentario temporal para forzar despliegue ---
 # Temporal change to force deploy
