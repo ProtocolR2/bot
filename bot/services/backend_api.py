@@ -24,8 +24,9 @@ def keep_backend_awake():
 # Iniciar el thread al cargar el módulo
 threading.Thread(target=keep_backend_awake, daemon=True).start()
 
+
+# ✅ Consulta si el usuario ya existe en el backend
 def check_user_registered(user_id: int) -> bool:
-    """Consulta al backend si el usuario está registrado."""
     url = f"{Config.BACKEND_URL}/api/users/{user_id}"
     try:
         res = requests.get(url, timeout=EXTENDED_TIMEOUT)
@@ -34,8 +35,9 @@ def check_user_registered(user_id: int) -> bool:
         logger.error(f"[check_user_registered] Error: {e}")
         return False
 
+
+# ✅ Obtener datos del usuario
 def get_user_data(user_id: int) -> dict | None:
-    """Obtiene datos completos del usuario desde el backend."""
     url = f"{Config.BACKEND_URL}/api/users/{user_id}"
     try:
         res = requests.get(url, timeout=DEFAULT_TIMEOUT)
@@ -46,12 +48,24 @@ def get_user_data(user_id: int) -> dict | None:
         logger.error(f"[get_user_data] Error: {e}")
         return None
 
+
+# ⛔️ Ya no se usa para registro inicial, pero se conserva por si se reutiliza
 def register_user(user_info: dict) -> bool:
-    """Registra un usuario nuevo en el backend."""
     url = f"{Config.BACKEND_URL}/api/users/"
     try:
         res = requests.post(url, json=user_info, timeout=DEFAULT_TIMEOUT)
         return res.status_code == 201
     except requests.RequestException as e:
         logger.error(f"[register_user] Error: {e}")
+        return False
+
+
+# ✅ NUEVO: Activar usuario con token recibido por /start <token>
+def activate_user(telegram_id: int, token: str) -> bool:
+    url = f"{Config.BACKEND_URL}/users/activate"
+    try:
+        res = requests.get(url, params={"telegram_id": telegram_id, "token": token}, timeout=DEFAULT_TIMEOUT)
+        return res.status_code == 200
+    except requests.RequestException as e:
+        logger.error(f"[activate_user] Error: {e}")
         return False
