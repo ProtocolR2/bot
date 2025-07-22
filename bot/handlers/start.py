@@ -1,51 +1,51 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+
 from bot.services.backend_api import check_user_registered, activate_user
 from bot.handlers.menu import show_main_menu
 
 # Lista de admins con mensajes personalizados
 ADMINS = {
-    7237906261: "Hola Amo 👑",
-    503453442: "Hola 👑 Maria, reina de mi bot ❤️",  # <-- Editalo a gusto
-    # Puedes agregar más admins fácilmente:
-    # 8888888888: "Hola Admin 3",
+    7237906261: "Hola Amo 👑",              # Admin 1 - tú
+    503453442: "Hola Maria 👑, Reina de mi bot ❤️",   # Admin 2
+    # Puedes agregar otro admin aquí más adelante
 }
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    /start → Muestra menú (y si viene con token, intenta activación)
-    """
-    telegram_id = update.effective_user.id
-    args = context.args  # token si vino como /start <token>
+# URL de la landing para compra
+LANDING_URL = "https://tulandingdepago.com"
 
-    # 1. Mostrar saludo especial si es admin
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    telegram_id = update.effective_user.id
+    args = context.args  # Token si viene con /start <token>
+
+    # 1. Si es admin, acceso directo con saludo personalizado
     if telegram_id in ADMINS:
         await update.message.reply_text(ADMINS[telegram_id])
+        await show_main_menu(update, context)
+        return
 
-    # 2. Intentar activación si vino token
+    # 2. Intentar activación si viene token
     if args:
         token = args[0]
         if activate_user(telegram_id, token):
             await update.message.reply_text(
                 "🎉 ¡Cuenta activada correctamente!\n\nYa podés acceder a tu menú principal:"
             )
+            await show_main_menu(update, context)
+            return
         else:
             await update.message.reply_text(
                 "❌ Token inválido o ya usado. Si creés que es un error, escribinos."
             )
-            return  # No mostramos menú si falló activación
+            return
 
+    # 3. Usuarios normales registrados
+    if check_user_registered(telegram_id):
+        await update.message.reply_text("👋 ¡Hola de nuevo!")
+        await show_main_menu(update, context)
     else:
-        # 3. Verificar si el usuario está registrado (flujo sin token)
-        if check_user_registered(telegram_id):
-            await update.message.reply_text("👋 ¡Hola de nuevo!")
-        else:
-            await update.message.reply_text(
-                "❌ Acceso denegado.\n\nEste bot es parte del programa pago Protocol R2.\n\n"
-                "👉 Completá tu compra para acceder.\n\n"
-                # "🔗 Pagá aquí: https://tu-landing.com"  # ← Reemplazá por tu link real
-            )
-            return  # No mostramos menú si no está registrado
-
-    # 4. Mostrar menú
-    await show_main_menu(update, context)
+        # 4. Usuarios no registrados -> mensaje con link a landing
+        await update.message.reply_text(
+            f"Acceso denegado, este bot es parte del programa pago protocol R2.\n\n"
+            f"Completa tu compra para acceder:\n{LANDING_URL}"
+        )
