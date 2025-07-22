@@ -62,7 +62,7 @@ def register_user(user_info: dict) -> bool:
 
 # ✅ Activar usuario con token recibido por /start <token>
 def activate_user(telegram_id: int, token: str) -> bool:
-    url = f"{Config.BACKEND_URL}/api/users/activar"
+    url = f"{Config.BACKEND_URL}/api/users/activar-cuenta"
     try:
         res = requests.post(url, json={"telegram_id": telegram_id, "token": token}, timeout=DEFAULT_TIMEOUT)
         return res.status_code == 200
