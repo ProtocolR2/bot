@@ -6,7 +6,7 @@ from bot.handlers.menu import show_main_menu
 # Lista de admins con mensajes personalizados
 ADMINS = {
     7237906261: "Hola Amo 👑",
-    9999999999: "Hola 👑 Maria, te amamos ❤️",  # <-- Editalo a gusto
+    503453442: "Hola 👑 Maria, reina de mi bot ❤️",  # <-- Editalo a gusto
     # Puedes agregar más admins fácilmente:
     # 8888888888: "Hola Admin 3",
 }
