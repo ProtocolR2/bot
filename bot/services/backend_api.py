@@ -19,7 +19,7 @@ def keep_backend_awake():
             logger.info(f"[keep_backend_awake] Ping result: {res.status_code}")
         except Exception as e:
             logger.warning(f"[keep_backend_awake] Error: {e}")
-        time.sleep(600)  # Esperar 10 minutos
+        time.sleep(600)
 
 # Iniciar el thread al cargar el módulo
 threading.Thread(target=keep_backend_awake, daemon=True).start()
@@ -60,11 +60,11 @@ def register_user(user_info: dict) -> bool:
         return False
 
 
-# ✅ NUEVO: Activar usuario con token recibido por /start <token>
+# ✅ Activar usuario con token recibido por /start <token>
 def activate_user(telegram_id: int, token: str) -> bool:
-    url = f"{Config.BACKEND_URL}/users/activate"
+    url = f"{Config.BACKEND_URL}/api/users/activar"
     try:
-        res = requests.get(url, params={"telegram_id": telegram_id, "token": token}, timeout=DEFAULT_TIMEOUT)
+        res = requests.post(url, json={"telegram_id": telegram_id, "token": token}, timeout=DEFAULT_TIMEOUT)
         return res.status_code == 200
     except requests.RequestException as e:
         logger.error(f"[activate_user] Error: {e}")
