@@ -1,5 +1,3 @@
-# bot/bot/main.py
-
 import logging
 from fastapi import FastAPI, Request
 from telegram import Update
@@ -44,12 +42,12 @@ async def on_startup():
 async def on_shutdown():
     await application.shutdown()
 
-# Endpoint de test para ping externo (cron-job.org)
-@app.get("/ping")
+# ✅ Endpoint de test para ping externo (cron-job.org, Uptime Robot, etc.)
+@app.api_route("/ping", methods=["GET", "HEAD"])
 async def ping():
     return {"status": "ok"}
 
-# Endpoint del webhook
+# ✅ Endpoint del webhook para Telegram
 @app.post("/webhook")
 async def telegram_webhook(req: Request):
     try:
@@ -60,3 +58,4 @@ async def telegram_webhook(req: Request):
         return {"status": "ok"}
     except Exception as e:
         logging.error(f"Error processing update: {e}", exc_info=True)
+        return {"status": "error", "message": str(e)}
